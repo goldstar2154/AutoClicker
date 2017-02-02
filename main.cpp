@@ -7,7 +7,5 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    //thats test commit :)
-
     return a.exec();
 }
