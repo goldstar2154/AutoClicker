@@ -1,10 +1,19 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+const QString s_appName("Autoclicker");
+const QString s_hotkey("clicker/hotkey");
+const QString s_delay("clicker/delay");
+const QString s_count("clicker/count");
+const QString s_clickBtn("clicker/clickBtn");
+const QString s_clickMode("clicker/clickMode");
+const QString s_freezePointer("clicker/freezePointer");
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    shortcut(new QHotkey(this))
+    shortcut(new QHotkey(this)),
+    settings(QSettings::IniFormat, QSettings::UserScope, s_appName, s_appName)
 {
     ui->setupUi(this);
 
@@ -34,10 +43,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->comboBox_ClickMode->addItem("Single", QVariant(1));
     ui->comboBox_ClickMode->addItem("Double", QVariant(2));
+
+    loadSettings();
 }
 
 MainWindow::~MainWindow()
 {
+    saveSettings();
+
     if (clickerThread != nullptr && clickerThread->isRunning())
         clickerThread->exit();
 
@@ -92,4 +105,26 @@ void MainWindow::on_pushButton_Exit_clicked()
 void MainWindow::on_keySequenceEdit_ShortCut_editingFinished()
 {
     shortcut->setShortcut(ui->keySequenceEdit_ShortCut->keySequence(), true);
+}
+
+void MainWindow::saveSettings()
+{
+   settings.setValue(s_hotkey, ui->keySequenceEdit_ShortCut->keySequence().toString());
+   settings.setValue(s_delay, ui->lineEdit_Delay->text());
+   settings.setValue(s_count, ui->lineEdit_Count->text());
+   settings.setValue(s_clickBtn, ui->comboBox_ClickType->itemData(ui->comboBox_ClickType->currentIndex()).toInt() - 1);
+   settings.setValue(s_clickMode, ui->comboBox_ClickMode->itemData(ui->comboBox_ClickMode->currentIndex()).toInt() - 1);
+   settings.setValue(s_freezePointer, ui->checkBox_Freeze->isChecked());
+}
+
+void MainWindow::loadSettings()
+{
+    ui->keySequenceEdit_ShortCut->setKeySequence(QKeySequence(settings.value(s_hotkey).toString()));
+    ui->lineEdit_Delay->setText(settings.value(s_delay).toString());
+    ui->lineEdit_Count->setText(settings.value(s_count).toString());
+    ui->comboBox_ClickType->setCurrentIndex(settings.value(s_clickBtn).toInt());
+    ui->comboBox_ClickMode->setCurrentIndex(settings.value(s_clickMode).toInt());
+    ui->checkBox_Freeze->setChecked(settings.value(s_freezePointer).toBool());
+
+    emit on_keySequenceEdit_ShortCut_editingFinished();
 }

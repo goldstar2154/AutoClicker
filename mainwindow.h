@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QThread>
 #include <QHotkey>
+#include <QSettings>
 #include "clicker.h"
 
 namespace Ui {
@@ -39,6 +40,10 @@ private:
     QHotkey* shortcut;
     QThread* clickerThread;
     Clicker* clickerWorker;
+    QSettings settings;
+
+    void saveSettings();
+    void loadSettings();
 };
 
 #endif // MAINWINDOW_H
