@@ -109,12 +109,12 @@ void MainWindow::on_keySequenceEdit_ShortCut_editingFinished()
 
 void MainWindow::saveSettings()
 {
-   settings.setValue(s_hotkey, ui->keySequenceEdit_ShortCut->keySequence().toString());
-   settings.setValue(s_delay, ui->lineEdit_Delay->text());
-   settings.setValue(s_count, ui->lineEdit_Count->text());
-   settings.setValue(s_clickBtn, ui->comboBox_ClickType->itemData(ui->comboBox_ClickType->currentIndex()).toInt() - 1);
-   settings.setValue(s_clickMode, ui->comboBox_ClickMode->itemData(ui->comboBox_ClickMode->currentIndex()).toInt() - 1);
-   settings.setValue(s_freezePointer, ui->checkBox_Freeze->isChecked());
+    settings.setValue(s_hotkey, ui->keySequenceEdit_ShortCut->keySequence().toString());
+    settings.setValue(s_delay, ui->lineEdit_Delay->text());
+    settings.setValue(s_count, ui->lineEdit_Count->text());
+    settings.setValue(s_clickBtn, ui->comboBox_ClickType->itemData(ui->comboBox_ClickType->currentIndex()).toInt() - 1);
+    settings.setValue(s_clickMode, ui->comboBox_ClickMode->itemData(ui->comboBox_ClickMode->currentIndex()).toInt() - 1);
+    settings.setValue(s_freezePointer, ui->checkBox_Freeze->isChecked());
 }
 
 void MainWindow::loadSettings()
@@ -126,5 +126,6 @@ void MainWindow::loadSettings()
     ui->comboBox_ClickMode->setCurrentIndex(settings.value(s_clickMode).toInt());
     ui->checkBox_Freeze->setChecked(settings.value(s_freezePointer).toBool());
 
+    // need to emit for QHotkey
     emit on_keySequenceEdit_ShortCut_editingFinished();
 }
