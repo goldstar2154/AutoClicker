@@ -28,6 +28,8 @@ private slots:
 
     void on_keySequenceEdit_ShortCut_editingFinished();
 
+    void on_progress(const long& _progress);
+
 signals:
     void setupWorker(const long& _count, const long& _delay, const int& _clickType, const int& _clickMode, const bool& _freezePointer);
     void setKeepGoing(const bool& _keepGoing);

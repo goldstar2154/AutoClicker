@@ -12,13 +12,14 @@ MainWindow::MainWindow(QWidget *parent) :
     clickerWorker = new Clicker();
 
     // Connecting objects
-    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(on_shortcut_activated()));
+    connect(shortcut, SIGNAL(activated()), this, SLOT(on_shortcut_activated()));
 
     connect(clickerThread, SIGNAL(started()), this, SLOT(lockForm()));
     connect(clickerThread, SIGNAL(finished()), this, SLOT(unlockForm()));
 
     connect(clickerThread, SIGNAL(started()), clickerWorker, SLOT(start()));
     connect(clickerWorker, SIGNAL(finished()), clickerThread, SLOT(quit()));
+    connect(clickerWorker, SIGNAL(progress(long)), this, SLOT(on_progress(long)));
 
     clickerWorker->moveToThread(clickerThread);
 
@@ -40,7 +41,8 @@ MainWindow::~MainWindow()
     if (clickerThread != nullptr && clickerThread->isRunning())
         clickerThread->exit();
 
-    delete clickerThread;
+    if (clickerThread != nullptr)
+        delete clickerThread;
 
     if (clickerWorker != nullptr)
         delete clickerWorker;
@@ -58,12 +60,16 @@ void MainWindow::unlockForm()
     setEnabled(true);
 }
 
+void MainWindow::on_progress(const long &_progress)
+{
+    ui->label_progress->setText(QString::number(_progress));
+}
+
 void MainWindow::on_shortcut_activated()
 {
     if (clickerThread->isRunning())
     {
         clickerWorker->setKeepGoing(false);
-        clickerThread->quit();
     }
     else
     {

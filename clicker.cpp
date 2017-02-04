@@ -9,7 +9,9 @@ Clicker::Clicker():
     clickBtn(0),
     clickMode(0),
     freezePointer(false),
-    keepGoing(false)
+    keepGoing(false),
+    cursorX(0),
+    cursorY(0)
 {
 
 }
@@ -26,18 +28,41 @@ long Clicker::click()
     if ( display == nullptr )
         return -1;  // cannot open display
 
+    if (freezePointer)
+    {
+        XTestFakeMotionEvent(display, -1, cursorX, cursorY, 0);
+    }
+
     XTestFakeButtonEvent(display, clickBtn, true, CurrentTime);     // press
     XTestFakeButtonEvent(display, clickBtn, false, CurrentTime);    // release
 
     if (clickMode == 2)
     {
-        // i dont find any information about differebce between single & double clicks in x11
+        // i dont find any information about difference between single & double clicks in x11
         // so just do the second click
         XTestFakeButtonEvent(display, clickBtn, true, CurrentTime);     // press
         XTestFakeButtonEvent(display, clickBtn, false, CurrentTime);    // release
     }
 
     XFlush(display);
+    XCloseDisplay(display);
+
+    return 0;
+}
+
+long Clicker::getCursorCoordinates()
+{
+    Display *display = XOpenDisplay(NULL);
+
+    if(display == NULL)
+        return -1;  // cannot open display
+
+    Window wDummy;
+    int iDummy;
+    unsigned int uDummy;
+
+    XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &wDummy, &wDummy, &iDummy, &iDummy, &cursorX, &cursorY, &uDummy);
+
     XCloseDisplay(display);
 
     return 0;
@@ -56,6 +81,9 @@ void Clicker::start()
 {
     long clicksCounter = 0;
 
+    if (freezePointer)
+        getCursorCoordinates();
+
     while (clicksCounter < count || count == 0)
     {
         if (!keepGoing)
@@ -65,6 +93,8 @@ void Clicker::start()
             break;
 
         clicksCounter++;
+
+        emit progress(clicksCounter);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     }

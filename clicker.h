@@ -19,11 +19,12 @@ public slots:
     void start();
 
 signals:
-    void progress();
+    void progress(const long&);
     void finished();
 
 private:
     long click();
+    long getCursorCoordinates();
 
     long count;
     long delay;
@@ -32,6 +33,9 @@ private:
     bool freezePointer;
     bool keepGoing;
     QMutex mutex;
+
+    int cursorX;
+    int cursorY;
 
 };
 
