@@ -24,3 +24,6 @@ HEADERS  += mainwindow.h \
 LIBS += -lXtst
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    resource.qrc

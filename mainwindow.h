@@ -5,6 +5,8 @@
 #include <QThread>
 #include <QHotkey>
 #include <QSettings>
+#include <QSystemTrayIcon>
+#include <QMenu>
 #include "clicker.h"
 
 namespace Ui {
@@ -21,15 +23,13 @@ public:
 
 private slots:
     void on_shortcut_activated();
-
     void on_pushButton_Exit_clicked();
-
     void lockForm();
     void unlockForm();
-
     void on_keySequenceEdit_ShortCut_editingFinished();
-
     void on_progress(const long& _progress);
+    void on_pushButton_Hide_clicked();
+    void on_trayShow();
 
 signals:
     void setupWorker(const long& _count, const long& _delay, const int& _clickType, const int& _clickMode, const bool& _freezePointer);
@@ -41,6 +41,7 @@ private:
     QThread* clickerThread;
     Clicker* clickerWorker;
     QSettings settings;
+    QSystemTrayIcon* sysTrayIcon;
 
     void saveSettings();
     void loadSettings();

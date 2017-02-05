@@ -17,6 +17,21 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    sysTrayIcon = new QSystemTrayIcon(this);
+    sysTrayIcon->setIcon(QIcon(":/icons/icon_idle"));
+
+    QMenu* menu = new QMenu(this);
+    QAction* actionShow = new QAction("Show", this);
+    QAction* actionExit = new QAction("Exit", this);
+
+    menu->addAction(actionShow);
+    menu->addAction(actionExit);
+
+    sysTrayIcon->setContextMenu(menu);
+
+    connect(actionShow, SIGNAL(triggered()), this, SLOT(on_trayShow()));
+    connect(actionExit, SIGNAL(triggered()), this, SLOT(close()));
+
     clickerThread = new QThread();
     clickerWorker = new Clicker();
 
@@ -66,11 +81,17 @@ MainWindow::~MainWindow()
 void MainWindow::lockForm()
 {
     setEnabled(false);
+
+    if ( this->isHidden() )
+        sysTrayIcon->setIcon(QIcon(":/icons/icon_work"));
 }
 
 void MainWindow::unlockForm()
 {
     setEnabled(true);
+
+    if ( this->isHidden() )
+        sysTrayIcon->setIcon(QIcon(":/icons/icon_idle"));
 }
 
 void MainWindow::on_progress(const long &_progress)
@@ -128,4 +149,16 @@ void MainWindow::loadSettings()
 
     // need to emit for QHotkey
     emit on_keySequenceEdit_ShortCut_editingFinished();
+}
+
+void MainWindow::on_pushButton_Hide_clicked()
+{
+    hide();
+    sysTrayIcon->show();
+}
+
+void MainWindow::on_trayShow()
+{
+    show();
+    sysTrayIcon->hide();
 }
