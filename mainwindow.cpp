@@ -24,10 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction* actionShow = new QAction("Show", this);
     QAction* actionExit = new QAction("Exit", this);
 
+    sysTrayIcon->setContextMenu(menu);
+
     menu->addAction(actionShow);
     menu->addAction(actionExit);
-
-    sysTrayIcon->setContextMenu(menu);
 
     connect(actionShow, SIGNAL(triggered()), this, SLOT(on_trayShow()));
     connect(actionExit, SIGNAL(triggered()), this, SLOT(close()));
