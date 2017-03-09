@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     settings(QSettings::IniFormat, QSettings::UserScope, s_appName, s_appName)
 {
     ui->setupUi(this);
-
+    //fake commit line
 
     sysTrayIcon = new QSystemTrayIcon(this);
     sysTrayIcon->setIcon(QIcon(":/icons/icon_idle"));
