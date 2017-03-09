@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
     sysTrayIcon = new QSystemTrayIcon(this);
     sysTrayIcon->setIcon(QIcon(":/icons/icon_idle"));
 
